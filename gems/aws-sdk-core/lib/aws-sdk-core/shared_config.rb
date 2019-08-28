@@ -312,7 +312,13 @@ module Aws
 
     def credentials_from_shared(profile, opts)
       if @parsed_credentials && prof_config = @parsed_credentials[profile]
-        credentials_from_profile(prof_config)
+        if prof_config["role_arn"] && prof_config["web_identity_token_file"]
+          assume_role_web_identity_credentials_from_config(profile: profile)
+        elsif prof_config["role_arn"]
+          assume_role_credentials_from_config(profile: profile)
+        else
+          credentials_from_profile(prof_config)
+        end
       else
         nil
       end
@@ -320,7 +326,13 @@ module Aws
 
     def credentials_from_config(profile, opts)
       if @parsed_config && prof_config = @parsed_config[profile]
-        credentials_from_profile(prof_config)
+        if prof_config["role_arn"] && prof_config["web_identity_token_file"]
+          assume_role_web_identity_credentials_from_config(profile: profile)
+        elsif prof_config["role_arn"]
+          assume_role_credentials_from_config(profile: profile)
+        else
+          credentials_from_profile(prof_config)
+        end
       else
         nil
       end
