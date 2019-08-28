@@ -658,6 +658,9 @@ module Aws
 
       def get_credentials
         credentials = @credentials_provider.credentials
+        if credentials.class.included_modules.include?(Aws::CredentialProvider)
+          credentials = credentials.credentials
+        end
         if credentials_set?(credentials)
           credentials
         else
